@@ -1,2 +1,7 @@
+"teste 1";
+if($teste==$teste2){
+    echo "disney";
+}
+
 $s = read "Entre com uma string";
 echo $s . "\n";
