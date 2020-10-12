@@ -1,7 +1,12 @@
-"teste 1";
-if($teste==$teste2){
-    echo "disney";
-}
-
-$s = read "Entre com uma string";
-echo $s . "\n";
+$teste="6";
+$testw="6";
+if($teste!=$testw){
+    echo "foi no if";
+} elseif($teste=="1"){
+    echo "foi primeiro elseif";
+} elseif($testw=="6"){
+    echo "foi segundo elseif";
+} else {
+    echo "foi else";
+};
+echo "tesssste";

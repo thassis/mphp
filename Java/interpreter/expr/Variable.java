@@ -3,7 +3,7 @@ package interpreter.expr;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Variable extends IntExpr {
+public class Variable extends DynamicExpr {
     
     public static Map<String, Variable> variables;
 
@@ -12,24 +12,24 @@ public class Variable extends IntExpr {
     }
 
     private String name;
-    private int value;
+    private DynamicType value;
 
     private Variable(String name) {
         super(-1);
 
         this.name = name;
-        this.value = 0;
+        // this.value = 0;
     }
 
     public String getName() {
         return name;
     }
 
-    public int expr() {
+    public DynamicType expr() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(DynamicType value) {
         this.value = value;
     }
 

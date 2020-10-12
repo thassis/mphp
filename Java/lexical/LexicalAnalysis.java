@@ -178,6 +178,8 @@ public class LexicalAnalysis implements AutoCloseable {
 
                     break;
                 case 12:
+                    lex.type = TokenType.NUMBER;
+                    state = 16;
                     break;
                 case 13:
                     if (c == '\\') {

@@ -5,7 +5,7 @@ import lexical.LexicalException;
 
 import syntatic.SyntaticAnalysis;
 
-import interpreter.command.Command;
+import interpreter.command.BlocksCommand;
 
 public class mphpi {
 
@@ -21,7 +21,7 @@ public class mphpi {
             // TODO: descomentar depois que o analisador léxico estiver OK.
             */
             SyntaticAnalysis s = new SyntaticAnalysis(l);
-            Command c = s.start();
+            BlocksCommand c = s.start();
             c.execute();
             
 

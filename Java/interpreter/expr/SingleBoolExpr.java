@@ -2,11 +2,11 @@ package interpreter.expr;
 
 public class SingleBoolExpr extends BoolExpr {
 
-    private IntExpr left;
+    private boolean left;
     private RelOp op;
-    private IntExpr right;
+    private boolean right;
 
-    public SingleBoolExpr(int line, IntExpr left, RelOp op, IntExpr right) {
+    public SingleBoolExpr(int line, boolean left, RelOp op, boolean right) {
         super(line);
         this.left = left;
         this.op = op;
@@ -14,24 +14,29 @@ public class SingleBoolExpr extends BoolExpr {
     }
 
     public boolean expr() {
-        int v1 = left.expr();
-        int v2 = right.expr();
-
+        
         switch (op) {
+            case And:
+                return this.left && this.right;
+            case Or:
+                return this.left || this.right;
             case Equal:
-                return v1 == v2;
+                return this.left == this.right;
             case NotEqual:
-                return v1 != v2;
-            case LowerThan:
+                return this.left != this.right;
+            default:
+                return this.left != this.right;
+        }
+    }
+    
+}
+
+/**
+case LowerThan:
                 return v1 < v2;
             case LowerEqual:
                 return v1 <= v2;
             case GreaterThan:
                 return v1 > v2;
             case GreaterEqual:
-            default:
-                return v1 >= v2;
-        }
-    }
-    
-}
+             */

@@ -1,10 +1,10 @@
 package interpreter.expr;
 
-public abstract class StringExpr {
+public abstract class DynamicExpr {
 
     private int line;
 
-    public StringExpr(int line) {
+    public DynamicExpr(int line) {
         this.line = line;
     }
 
@@ -12,6 +12,6 @@ public abstract class StringExpr {
         return line;
     }
 
-    public abstract String expr();
+    public abstract DynamicType expr();
 
 }

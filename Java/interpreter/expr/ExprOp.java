@@ -1,11 +1,12 @@
 package interpreter.expr;
 
-public enum IntOp {
+public enum ExprOp {
 
     Add,
     Sub,
     Mul,
     Div,
-    Mod
+    Mod,
+    Concat
 
 }

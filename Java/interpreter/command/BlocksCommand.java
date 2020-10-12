@@ -17,8 +17,9 @@ public class BlocksCommand extends Command {
     }
 
     public void execute() {
-        for (Command cmd : cmds)
+        for (Command cmd : cmds){
             cmd.execute();
+        }
     }
 
 }
