@@ -30,13 +30,3 @@ public class SingleBoolExpr extends BoolExpr {
     }
     
 }
-
-/**
-case LowerThan:
-                return v1 < v2;
-            case LowerEqual:
-                return v1 <= v2;
-            case GreaterThan:
-                return v1 > v2;
-            case GreaterEqual:
-             */

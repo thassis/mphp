@@ -17,6 +17,7 @@ import interpreter.command.IfCommand;
 import interpreter.command.EchoCommand;
 import interpreter.command.WhileCommand;
 import interpreter.command.BlocksCommand;
+import interpreter.command.ForEachCommand;
 
 import interpreter.expr.ReadDynamicExpr;
 import interpreter.expr.BoolExpr;
@@ -114,20 +115,21 @@ public class SyntaticAnalysis {
     // <statement> ::= <if> | <while> | <foreach> | <echo> | <assign>
     private Command procStatement() throws LexicalException, IOException {
         Command c = null;
-        if (current.type == TokenType.VAR)
+        if (current.type == TokenType.VAR){
             c = procAssign();
-        else if (current.type == TokenType.ECHO)
+            matchToken(TokenType.SEMICOLON);
+        } else if (current.type == TokenType.ECHO){
             c = procEcho();
-        else if (current.type == TokenType.IF){
+            matchToken(TokenType.SEMICOLON);
+        } else if (current.type == TokenType.IF){
             c = procIf();
-        // else if (current.type == TokenType.WHILE)
-            // c = procWhile();
-        // else if (current.type == TokenType.FOREACH)
-            // procForeach();
-        } else
+        } else if (current.type == TokenType.WHILE) {
+            c = procWhile();
+        } else if (current.type == TokenType.FOREACH) {
+            c = procForeach();
+        } else{
             showError();
-
-        matchToken(TokenType.SEMICOLON);
+        }
 
         return c;
     }
@@ -176,11 +178,49 @@ public class SyntaticAnalysis {
     }
 
     // <while> ::= while '(' <boolexpr> ')' '{' <code> '}'
-    private void procWhile() throws LexicalException, IOException {
+    private WhileCommand procWhile() throws LexicalException, IOException {
+        matchToken(TokenType.WHILE);
+        int line = lex.getLine();
+
+        matchToken(TokenType.OPEN_PAR);
+        BoolExpr cond = procBoolExpr();
+        matchToken(TokenType.CLOSE_PAR);
+
+        matchToken(TokenType.OPEN_CUR);
+        Command cmds = procCode();
+        matchToken(TokenType.CLOSE_CUR);
+
+        return new WhileCommand(line, cond, cmds);
     }
 
     // <foreach> ::= foreach '(' <expr> as <var> [ '=>' <var> ] ')' '{' <code> '}'
-    private void procForeach() throws LexicalException, IOException {
+    private ForEachCommand procForeach() throws LexicalException, IOException {
+        int line = lex.getLine();
+
+        matchToken(TokenType.FOREACH);
+        matchToken(TokenType.OPEN_PAR);
+
+        DynamicExpr array = procExpr();
+        matchToken(TokenType.AS);
+        Variable varLeft = procVar();
+        
+        if(current.type == TokenType.ARROW){
+            advance();
+            Variable value = procVar();
+            matchToken(TokenType.CLOSE_PAR);
+            matchToken(TokenType.OPEN_CUR);
+            BlocksCommand thenCmds = procCode();
+            matchToken(TokenType.CLOSE_CUR);
+
+            // System.out.println(line + ": " + array.expr().getValue() + ": " + varLeft.getName() + ": " + value.getName());
+            return new ForEachCommand(line, array.expr(), thenCmds, varLeft.getName(), value.getName());
+        }
+
+        matchToken(TokenType.CLOSE_PAR);
+        matchToken(TokenType.OPEN_CUR);
+        BlocksCommand thenCmds = procCode();
+        matchToken(TokenType.CLOSE_CUR);
+        return new ForEachCommand(line, array.expr(), thenCmds, varLeft.getName());
     }
 
     // <echo> ::= echo <expr> ';'
@@ -236,11 +276,11 @@ public class SyntaticAnalysis {
 
             DynamicExpr expr = procExpr();
 
-            return new AssignCommand(line, var, op, expr);
+                        return new AssignCommand(line, var, op, expr);
         }
         matchToken(TokenType.ASSIGN);
         DynamicExpr expr = procExpr();
-
+            
         return new AssignCommand(line, var, AssignOp.Assign, expr);
     }
 
@@ -397,11 +437,11 @@ public class SyntaticAnalysis {
             return procNumber();
         } else if(current.type == TokenType.STRING){
             return procString();
-        // } else if(current.type == TokenType.ARRAY){
-        //     return procArray();
+        } else if(current.type == TokenType.ARRAY){
+            return procArray();
         } else if(current.type == TokenType.READ){
             return procRead();
-        } else if(current.type == TokenType.VAR){ 
+       } else if(current.type == TokenType.VAR){ 
             return procVar();
         } else{
             return procString();
@@ -409,7 +449,31 @@ public class SyntaticAnalysis {
     }
 
     // <array> ::= array '(' [ <expr> '=>' <expr> { ',' <expr> '=>' <expr> } ] ')'
-    private void procArray() throws LexicalException, IOException {
+    private DynamicExpr procArray() throws LexicalException, IOException {
+        String tmp = "array(";
+        int line = lex.getLine();
+        matchToken(TokenType.ARRAY);
+        matchToken(TokenType.OPEN_PAR);
+        
+        if(current.type == TokenType.CLOSE_PAR){
+            tmp += ")";
+        } else {
+            while(current.type != TokenType.CLOSE_PAR){
+                DynamicExpr index = procExpr();
+                tmp += index.expr().getValue();
+                matchToken(TokenType.ARROW);
+                tmp += "=>";
+                DynamicExpr value = procExpr();
+                tmp += value.expr().getValue();
+                if(current.type == TokenType.COMMA){
+                    tmp += ",";
+                    advance();
+                }
+            }
+            matchToken(TokenType.CLOSE_PAR);
+            tmp += ")";
+        }
+        return new ConstDynamicExpr(line, new DynamicType(ConstantType.ARRAY, tmp));
     }
 
     // <read> ::= read <expr>
@@ -426,10 +490,10 @@ public class SyntaticAnalysis {
     //Verify if need to increment or decrement
     public int verifyIfIncOrDec() throws LexicalException, IOException{
         if(current.type == TokenType.INC){
-            advance();
+            // advance();
             return 1;
         } else if(current.type == TokenType.DEC){
-            advance();
+            // advance();
             return -1;
         }
         return 0;
@@ -451,25 +515,29 @@ public class SyntaticAnalysis {
 
     // <access> ::= ( <varvar> | '(' <expr> ')' ) [ '[' <expr> ']' ]
     private DynamicExpr procAccess() throws LexicalException, IOException {
-        if(current.type == TokenType.DOLAR){
-            return procVar();
-        } else {
+        // System.out.println("proc Acess: " + current.type);
+        if(current.type == TokenType.DOLAR || current.type == TokenType.VAR){
+            return procVarVar();
+        } else if(current.type == TokenType.OPEN_PAR) {
             matchToken(TokenType.OPEN_PAR);
             DynamicExpr access_expr = procExpr();
             matchToken(TokenType.CLOSE_PAR);
             return access_expr;
+        } else {
+            return procVarVar();
         }
         //TODO: ARRAY [ '[' <expr> ']' ]
     }
 
     // <varvar> ::= '$' <varvar> | <var>
     private Variable procVarVar() throws LexicalException, IOException {
-        matchToken(TokenType.DOLAR);
-        // if(current.type == TokenType.DOLAR){
-        //     //varvar
-        // } else {
+        if(current.type == TokenType.DOLAR){
+            matchToken(TokenType.DOLAR);
+            //varvar
             return procVar();
-        // }   
+        } else {
+            return procVar();
+        }   
     }
 
     private ConstDynamicExpr procNumber() throws LexicalException, IOException {
@@ -484,7 +552,7 @@ public class SyntaticAnalysis {
         matchToken(TokenType.STRING);
         int line = lex.getLine();
 
-        return new ConstDynamicExpr(line, new DynamicType(ConstantType.INT, str));
+        return new ConstDynamicExpr(line, new DynamicType(ConstantType.STRING, str));
     }
 
     private Variable procVar() throws LexicalException, IOException {

@@ -4,5 +4,6 @@ public enum ConstantType{
     INT,
     STRING,
     BOOLEAN,
+    ARRAY,
     UNKNOW
 };

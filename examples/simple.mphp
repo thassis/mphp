@@ -1,12 +1,26 @@
-$teste="6";
-$testw="6";
-if($teste!=$testw){
+/* teste de comentario */
+$teste = 10;
+$testw = 6;
+$teste += 5 * 3;
+echo $teste;
+$teste3= $teste + $testw;
+
+echo $teste3;
+if($teste==$testw){
     echo "foi no if";
 } elseif($teste=="1"){
-    echo "foi primeiro elseif";
+    echo "foi primeiro elseif igual a 1";
+} elseif($teste>$testw){
+    echo "foi no teste do maior";
+} elseif($teste>=$testw){
+    echo "foi no teste do maior ou igual";
+} elseif($teste<$testw){
+    echo "foi no teste do menor";
+} elseif($teste<=$testw){
+    echo "foi no teste do menor";
 } elseif($testw=="6"){
-    echo "foi segundo elseif";
+    echo "foi elseif igual a 6";
 } else {
     echo "foi else";
-};
+}
 echo "tesssste";

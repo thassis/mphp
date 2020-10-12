@@ -16,6 +16,12 @@ public class mphpi {
         }
 
         try (LexicalAnalysis l = new LexicalAnalysis(args[0])) {
+            /**
+                How to compile:
+                find -name "*.java" > sources.txt
+                javac @sources.txt
+                java mphpi ../examples/<name_of_file>.mphp
+             */
             /*
             // O código a seguir é dado para testar o interpretador.
             // TODO: descomentar depois que o analisador léxico estiver OK.

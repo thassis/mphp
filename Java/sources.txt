@@ -1,3 +1,4 @@
+./interpreter/expr/SingleDynamicBoolExpr.java
 ./interpreter/expr/NotBoolExpr.java
 ./interpreter/expr/ConstBoolExpr.java
 ./interpreter/expr/AssignOp.java

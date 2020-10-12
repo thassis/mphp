@@ -32,7 +32,7 @@ public class IfCommand extends Command {
             alreadyExecuted = true;
         } 
         
-        if(!alreadyExecuted && elseIfConds != null && elseIfCodes != null){
+        if(!alreadyExecuted && (elseIfConds != null && elseIfConds.size() > 0) && (elseIfCodes != null && elseIfCodes.size()>0)){
             Iterator<BoolExpr> itrConds = elseIfConds.iterator(); 
             Iterator<BlocksCommand> itrCodes = elseIfCodes.iterator();
             do {

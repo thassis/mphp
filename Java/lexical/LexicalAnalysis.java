@@ -98,14 +98,55 @@ public class LexicalAnalysis implements AutoCloseable {
 
                     break;
                 case 2:
+                    if(c == 42){ // *
+                        state = 3;
+                    } else{
+                        if (c != -1)
+                            input.unread(c);
+                        state = 15;
+                    }
                     break;
                 case 3:
+                    if(c == 42){ // *
+                        state = 4;
+                    } else{
+                        state = 3;
+                    }
                     break;
                 case 4:
+                    if(c == 42){ // *
+                        state = 4;
+                    } else if(c == 47){ // /
+                        state = 1;
+                    } else{
+                        state = 3;
+                    }
                     break;
                 case 5:
+                    if(c == 61){  // =
+                        lex.token += (char) c;
+                        lex.type = TokenType.ASSIGN_ADD;
+                    } else if(c == 43){  // +
+                        lex.token += (char) c;
+                        lex.type = TokenType.INC;
+                    } else{
+                        if (c != -1)
+                            input.unread(c);
+                    }
+                    state = 15;
                     break;
                 case 6:
+                    if(c == 61){ //=
+                        lex.token += (char) c;
+                        lex.type = TokenType.ASSIGN_SUB;
+                    } else if(c == 45){  // -
+                        lex.token += (char) c;
+                        lex.type = TokenType.DEC;
+                    } else{
+                        if (c != -1)
+                            input.unread(c);
+                    }
+                    state = 15;
                     break;
                 case 7:
                     if (c == '=') {
@@ -178,8 +219,15 @@ public class LexicalAnalysis implements AutoCloseable {
 
                     break;
                 case 12:
-                    lex.type = TokenType.NUMBER;
-                    state = 16;
+                    if(Character.isDigit(c)){
+                        state = 12;
+                        lex.token += (char) c;
+                    } else{
+                        if (c != -1)
+                            input.unread(c);
+                        lex.type = TokenType.NUMBER;
+                        state = 16;
+                    }
                     break;
                 case 13:
                     if (c == '\\') {

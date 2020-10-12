@@ -24,6 +24,14 @@ public class SingleDynamicBoolExpr extends BoolExpr {
                 return this.left.getValue().equals(this.right.getValue());
             case NotEqual:
                 return !this.left.getValue().equals(this.right.getValue());
+            case LowerThan:
+                return this.left.convertToNumber() < this.right.convertToNumber();
+            case LowerEqual:
+                return this.left.convertToNumber() <= this.right.convertToNumber();
+            case GreaterThan:
+                return this.left.convertToNumber() > this.right.convertToNumber();
+            case GreaterEqual:
+                return this.left.convertToNumber() >= this.right.convertToNumber();
             default:
                 return !this.left.getValue().equals(this.right.getValue());
         }

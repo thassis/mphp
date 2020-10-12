@@ -1,16 +1,27 @@
+
 /* Best Megadeth band formation */
 $band = array("David Mustaine" => "guitars",
               "David Ellefson" => "bass",
               "Martin Friedman" => "guitars",
               "Nick Menza" => "drums");
 
-echo "Members:\n";
-foreach ($band as $member => $instrument) {
-    echo "  " . $member . ": " . $instrument . "\n";
-    $$instrument++;
+foreach ($band as $member) {
+    echo $member;
 }
+$i=9;
 
+if($i<10){
+    echo $i;
+}
+$ee = $i % 5;
+echo $ee;
+
+$s = read "Entre com uma string";
+echo $s . "\n";
+
+/*
 echo "Stats:\n";
 echo "  Guitars: " . $guitars . "\n";
 echo "  Bass: " . $bass . "\n";
 echo "  Drums: " . $drums . "\n";
+*/
