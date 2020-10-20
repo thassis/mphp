@@ -22,36 +22,38 @@ public class AssignCommand extends Command {
     }
 
     public void execute() {
-        DynamicType value = expr.expr();
-        if(var.expr() != null){
-            int tmp = var.expr().convertToNumber();
-            switch (this.op) {
-                case Assign:
-                    var.setValue(value);
-                    break;
-                case AssignAdd:
-                    var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() + tmp)));
-                    break;
-                case AssignSub:
-                    var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() - tmp)));
-                    break;
-                case AssignConcat:
-                    var.setValue(new DynamicType(ConstantType.STRING,value + var.expr().getValue()));
-                    break;
-                case AssignMul:
-                    var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() * tmp)));
-                    break;
-                case AssignDiv:
-                    var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() / tmp)));
-                    break;   
-                case AssignMod:
-                    var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() % tmp)));
-                    break;               
-                default:
-                    break;
+        if(this.expr != null){
+            DynamicType value = expr.expr();
+            if(var.expr() != null){
+                int tmp = var.expr().convertToNumber();
+                switch (this.op) {
+                    case Assign:
+                        var.setValue(value);
+                        break;
+                    case AssignAdd:
+                        var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() + tmp)));
+                        break;
+                    case AssignSub:
+                        var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() - tmp)));
+                        break;
+                    case AssignConcat:
+                        var.setValue(new DynamicType(ConstantType.STRING,value + var.expr().getValue()));
+                        break;
+                    case AssignMul:
+                        var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() * tmp)));
+                        break;
+                    case AssignDiv:
+                        var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() / tmp)));
+                        break;   
+                    case AssignMod:
+                        var.setValue(new DynamicType(ConstantType.INT,Integer.toString(value.convertToNumber() % tmp)));
+                        break;               
+                    default:
+                        break;
+                }
+            } else {
+                var.setValue(value);
             }
-        } else {
-            var.setValue(value);
         }
 
     }

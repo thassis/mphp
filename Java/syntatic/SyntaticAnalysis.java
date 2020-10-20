@@ -244,39 +244,39 @@ public class SyntaticAnalysis {
             current.type == TokenType.ASSIGN_DIV ||    
             current.type == TokenType.ASSIGN_MOD
         ){
-            AssignOp op = null;
-            switch (current.type) {
-                case ASSIGN:
-                    op = AssignOp.Assign;
-                    break;
-                case ASSIGN_ADD:
-                    op = AssignOp.AssignAdd;
-                    break;
-                case ASSIGN_SUB:
-                    op = AssignOp.AssignSub;
-                    break;
-                case ASSIGN_CONCAT:
-                    op = AssignOp.AssignConcat;
-                    break;
-                case ASSIGN_MUL:
-                    op = AssignOp.AssignMul;
-                    break;
-                case ASSIGN_DIV:
-                    op = AssignOp.AssignDiv;
-                    break;   
-                case ASSIGN_MOD:
-                    op = AssignOp.AssignMod;
-                    break;               
-                default:
-                    showError();
-                    break;
-            }
+                    AssignOp op = null;
+                    switch (current.type) {
+                        case ASSIGN:
+                            op = AssignOp.Assign;
+                            break;
+                        case ASSIGN_ADD:
+                            op = AssignOp.AssignAdd;
+                            break;
+                        case ASSIGN_SUB:
+                            op = AssignOp.AssignSub;
+                            break;
+                        case ASSIGN_CONCAT:
+                            op = AssignOp.AssignConcat;
+                            break;
+                        case ASSIGN_MUL:
+                            op = AssignOp.AssignMul;
+                            break;
+                        case ASSIGN_DIV:
+                            op = AssignOp.AssignDiv;
+                            break;   
+                        case ASSIGN_MOD:
+                            op = AssignOp.AssignMod;
+                            break;               
+                        default:
+                            showError();
+                            break;
+                    }
 
-            advance();
+                    advance();
 
-            DynamicExpr expr = procExpr();
+                    DynamicExpr expr = procExpr();
 
-                        return new AssignCommand(line, var, op, expr);
+                    return new AssignCommand(line, var, op, expr);
         }
         matchToken(TokenType.ASSIGN);
         DynamicExpr expr = procExpr();
@@ -365,7 +365,7 @@ public class SyntaticAnalysis {
     // <expr> ::= <term> { ('+' | '-' | '.') <term> }
     private DynamicExpr procExpr() throws LexicalException, IOException {
         DynamicExpr termLeft = procTerm();
-        if(current.type == TokenType.ADD ||
+        while(current.type == TokenType.ADD ||
                 current.type == TokenType.SUB ||
                 current.type == TokenType.CONCAT) 
         {
@@ -389,18 +389,18 @@ public class SyntaticAnalysis {
 
             DynamicExpr termRight = procTerm();
 
-            return new BinaryTypeExpr(line, termLeft, op, termRight);
+            termLeft = new BinaryTypeExpr(line, termLeft, op, termRight);
 
-        } else {
-            return termLeft;
-        }
+        } 
+        return termLeft;
     }
 
     // <term> ::= <factor> { ('*' | '/' | '%') <factor> }
     private DynamicExpr procTerm() throws LexicalException, IOException {
         DynamicExpr factorLeft = procFactor();
         
-        if(current.type == TokenType.MUL ||
+
+        while(current.type == TokenType.MUL ||
                 current.type == TokenType.DIV ||
                 current.type == TokenType.MOD) 
         {
@@ -423,12 +423,11 @@ public class SyntaticAnalysis {
             advance();
 
             DynamicExpr factorRight = procFactor();
+            factorLeft = new BinaryTypeExpr(line, factorLeft, op, factorRight);
 
-            return new BinaryTypeExpr(line, factorLeft, op, factorRight);
-
-        } else {
-            return factorLeft;
         }
+        
+        return factorLeft;
     }
 
     // <factor> ::= <number> | <string> | <array> | <read> | <value>

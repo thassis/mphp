@@ -1,8 +1,8 @@
 /* teste de comentario */
 $teste = 10;
 $testw = 6;
-$teste += 5 * 3;
-echo $teste;
+$teste += 5 * 3 + 4;
+echo "teste1: " . $teste;
 $teste3= $teste + $testw;
 
 echo $teste3;
