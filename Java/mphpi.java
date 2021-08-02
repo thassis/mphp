@@ -10,16 +10,11 @@ import interpreter.command.BlocksCommand;
 /**
     Link do projeto no git: https://github.com/thassis/mphp
     
-    Professor, não consegui terminar o trabalho completamente. 
     Ficou faltando os seguintes pontos: 
         -incrementar ou decrementar (++/--); 
         -Acessar uma posição do array; 
         -Atualizar a condição do while; 
         -implementar o var var;
-
-    Ficaria muito grato se você pudesse avaliar meu trabalho, 
-    mesmo não apresentando o resultado final perfeito, pois 
-    acredito que cheguei perto de finalizá-lo totalmente.
  */
  
 public class mphpi {
